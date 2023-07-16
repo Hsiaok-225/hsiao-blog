@@ -5,24 +5,21 @@ tags: [redux]
 # authors: [bofenghsiao]
 ---
 
-這次在團隊中負責研究並導入 redux(redux-toolkit), 預計會有一個系列由淺到深來談這個主題
+這次在團隊中負責研究並導入 redux(toolkit), 預計會有一個系列來談這個主題
 
 - redux 的概念和使用情境
-- 怎麼理解 middleware(中間件)。
+- 理解 middleware(中間件)
 
 <!--truncate-->
 
-### redux 之前
+### 在 redux 之前
 
-近期公司正好準備要開始一個新專案, 已有的專案是使用 useContext 和 useReducer 來管理前端狀態, 但在專案規模不小的情況下, 已經感受到這樣的模式在開發上有些需要改善的地方。
+近期公司正好準備要開始一個新專案, 但在專案規模不小的情況下, 已經感受到這樣的模式在開發上有些需要改善的地方。
 
-#### useContext 及 useReducer
-
-`useReducer`, 和 `useState` 有什麼不同
+#### 先看看 `useState`, `useReducer` 的比較
 
 ```jsx
 const [state, setState] = useState(INITIAL);
-
 const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 ```
 
@@ -30,6 +27,8 @@ const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 2. 後者多了需要使用 reducer 內定義好的方法來更新 state, 無法隨意呼叫 setState 改變 state
 3. reducer 定義了狀態更新(dispatch) 可使用的種類(type), 參數(payload)。
 4. useReducer 和 useContext  一併使用時能做到類似輕量化的 redux。
+
+#### useContext, useReducer 能夠解決的問題
 
 #### Prop Drilling:
 
@@ -39,17 +38,24 @@ const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
 `useReducer` 讓所有更新狀態的方法被定義在 `reducer` 中, 更容易對方法除錯和測試。
 
-解決了 React 中需要透過 `prop drilling` 的方式將狀態傳遞到深層子元件，並透過 reducer 避免開發者直接 `mutate` 資料，以減少不必要的錯誤。
+解決了 React 中需要透過 `prop drilling` 的方式將狀態傳遞到深層子元件，透過 reducer 避免開發者直接 `mutate` 資料，減少不必要的錯誤。
 
-### 使用 redux(redux-toolkit) 的理由
+### redux(toolkit) 幫你解決的問題
 
-如果你沒有遇到以下的問題(需求), 也許還用不上 redux, redux-toolkit
+如果你沒有遇到以下的問題(需求), 也許不一定需要用到 redux
+
+#### Track State Change(狀態追蹤)
+
+即便用 useReducer 來集中管理更新狀態的方法, 頻繁更新狀態的情境不容易找到資料更新的來源(到底是誰修改了狀態, 改了什麼東西), 尤其在非同步邏輯上更加明顯, redux-toolkit 整合 devtools 能夠更方便的查看狀態變化及 debug
+
+#### Re-Render(渲染效能)
+
+context 任何一個值更新時, 所有用到 context 值的 component 都重新渲染,隨著頁面功能增加, 元件變複雜, 容易遇到效能問題。
 
 #### Manage Global State(狀態集中管理)
 
-useContext
-
 ```jsx
+// useContext
 // 過多的 Context Provider, 未來如果繼續擴充, 維護的成本會逐漸增高。
 <GlobalContextProvider>
   <PopUpProvider>
@@ -61,14 +67,6 @@ useContext
   </PopUpProvider>
 </GlobalContextProvider>
 ```
-
-#### Track State Change(狀態追蹤)
-
-即便用 useReducer 來集中管理更新狀態的方法, 頻繁更新狀態的情境不容易找到資料更新的來源(到底是誰修改了狀態, 改了什麼東西), 尤其在非同步邏輯上更加明顯
-
-#### Re-Render(渲染效能)
-
-context 任何一個值更新時, 所有用到 context 值的 component 都重新渲染,隨著頁面功能增加, 元件變複雜, 容易遇到效能問題。
 
 #### Data Fetching(非同步請求)
 
