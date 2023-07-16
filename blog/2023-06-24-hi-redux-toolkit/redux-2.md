@@ -5,9 +5,9 @@ tags: [redux, state manage]
 # authors: [bofenghsiao]
 ---
 
-上一篇我們提到使用 redux 的情境, 也提到 middleware 的概念, 這次會講解
+上一篇我們提到使用 redux 的情境, 也提到 middleware 的概念, 這次來看
 
-- `redux-thunk`, `createAsyncThunk` 在非同步情境下的使用
+- `redux-thunk`, `createAsyncThunk` 這兩個內建的 middleware 在非同步情境下的使用
 - `RTK Query` 另一種 state manage (狀態管理)的觀點。
 
 <!--truncate-->
